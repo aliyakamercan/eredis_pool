@@ -123,8 +123,14 @@ q(PoolName, Command, Timeout) ->
     Reply = eredis:q(Worker, Command, Timeout),
     Reply.
 
+-spec qp(PoolName::atom(), [Command::iolist()]) ->
+               {ok, [binary()]}.
+
 qp(PoolName, Commands) ->
     qp(PoolName, Commands, ?TIMEOUT).
+
+-spec qp(PoolName::atom(), [Command::iolist()], Timeout::integer()) ->
+               {ok, [binary()]}.
 
 qp(PoolName, Commands, Timeout) ->
     Worker = poolboy:checkout(PoolName),
