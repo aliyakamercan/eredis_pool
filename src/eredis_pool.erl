@@ -119,8 +119,8 @@ q(PoolName, Command) ->
 
 q(PoolName, Command, Timeout) ->
     Worker = poolboy:checkout(PoolName),
-    poolboy:checkin(PoolName, Worker),
     Reply = eredis:q(Worker, Command, Timeout),
+    poolboy:checkin(PoolName, Worker),
     Reply.
 
 -spec qp(PoolName::atom(), [Command::iolist()]) ->
@@ -134,7 +134,7 @@ qp(PoolName, Commands) ->
 
 qp(PoolName, Commands, Timeout) ->
     Worker = poolboy:checkout(PoolName),
-    poolboy:checkin(PoolName, Worker),
     Reply = eredis:qp(Worker, Commands, Timeout),
+    poolboy:checkin(PoolName, Worker),
     Reply.
 
