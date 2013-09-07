@@ -18,6 +18,7 @@
 %% API
 -export([start/0, stop/0]).
 -export([q/2, q/3, 
+         qp/2, qp/3,
          create_pool/2, create_pool/3, create_pool/4, create_pool/5,
          create_pool/6, create_pool/7, 
          delete_pool/1]).
@@ -118,6 +119,22 @@ q(PoolName, Command) ->
 
 q(PoolName, Command, Timeout) ->
     Worker = poolboy:checkout(PoolName),
-    poolboy:checkin(PoolName, Worker),
     Reply = eredis:q(Worker, Command, Timeout),
+    poolboy:checkin(PoolName, Worker),
     Reply.
+
+-spec qp(PoolName::atom(), [Command::iolist()]) ->
+               {ok, [binary()]}.
+
+qp(PoolName, Commands) ->
+    qp(PoolName, Commands, ?TIMEOUT).
+
+-spec qp(PoolName::atom(), [Command::iolist()], Timeout::integer()) ->
+               {ok, [binary()]}.
+
+qp(PoolName, Commands, Timeout) ->
+    Worker = poolboy:checkout(PoolName),
+    Reply = eredis:qp(Worker, Commands, Timeout),
+    poolboy:checkin(PoolName, Worker),
+    Reply.
+
